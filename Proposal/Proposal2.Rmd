@@ -1,0 +1,118 @@
+---
+title: "Proposal"
+author: Victor
+documentclass: ctexart
+output:
+  rticles::ctex:
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+classoption: "hyperref,"
+geometry: margin=2.5cm
+fontsize: 12
+---
+
+## 研究背景
+
+2019年12月以来，湖北省武汉市出现新冠病毒肺炎，随后疫情在全国爆发。研究显示病毒主要通过呼吸道和飞沫传播，长时间暴露于相对密闭的环境下也可能引起气溶胶传播，因此全国各省市分别采取延迟开工、居家防疫等措施。2月10日以来，各地陆续开工，根据工信部消息，截至3月28日，全国规模以上工业企业平均复工率已达98.6%，人员平均复岗率为89.9%，中小企业复工率已达76%。对复工前后疫情发展和政府及企业疫情防控措施的对比可以探讨复工对疫情发展的影响，同时也可以对复工后政府和企业的疫情防控有一定的参考作用。
+
+
+## 研究问题
+
+我们基于SEIR模型对疫情发展趋势进行分析，通过复工前后疫情发展趋势的对比，对政府和企业在复工前后疫情防控措施的有效性进行评价，并根据模型推算结果为复工后疫情防控提出一定的建议。
+
+
+## 数据来源
+
+数据来源于国家卫健委及全国各省市卫健委网站发布的新冠肺炎官方统计数字，数据收集工作是由统计学班全体同学一起完成。
+
+
+## 研究方法
+
+研究中，我们将主要采用假设潜伏期具有传染性的SEIR模型，并辅以相关分析方法进行研究。
+
+
+## SEIR模型R代码
+library(deSolve) 
+ 
+library(ggplot2)
+ 
+seir<-function(time, state, pars){ 
+      
+      with(as.list(c(state, pars)),{ 
+         
+         dS <-- S * beta * I/N 
+         
+         dE <- S * beta * I/N - E * k
+        
+         dI <- E * k - I * (mu + gamma)
+       
+         dR <- I * gamma
+        
+         dN <- dS + dE + dI + dR
+ 
+         list(c(dS,dE,dI,dR,dN))
+     })
+ }
+
+N<-1.9E8#总人口
+
+E0<-0#期初潜伏数
+
+RM0<-0#期初移除数
+
+I0<-89#期初感染数
+
+S0=N-I0-RM0#期初易感人数
+
+init<-c(S=S0,E=E0,I=I0,R=RM0,N=N)
+
+time<-seq(0,150,1)
+
+pars<-c(beta=0.55,k=1,gamma=0.2,mu=0.02)#分别代表有效接触率、潜伏到感染的转化率、RCOVERY、感染期死亡率
+
+res.seir<-as.data.frame(lsoda(y = init, times = time, func = seir, parms = pars))
+
+ggplot(res.seir) +
+ 
+  geom_line(aes(x = time, y = S, col = '2 易感'))+
+ 
+  geom_line(aes(x = time, y = E, col = '3 潜伏'))+
+ 
+  geom_line(aes(x = time, y = I, col = '4 感染'))+
+ 
+  geom_line(aes(x = time, y = R, col = '5 移除'))+
+ 
+  geom_line(aes(x = time, y = N, col = '1 人口'))+
+ 
+  theme_light(base_family = 'Kai') +
+ 
+  scale_colour_manual("",
+ 
+  values=c(
+   
+    "2 易感" = "cornflowerblue", "3 潜伏" = "orange",
+   
+    "4 感染" = "darkred", "5 移除" = "forestgreen", 
+   
+    "1 人口" = "black"
+   
+    )
+ 
+  ) +
+ 
+  scale_y_continuous('')
+
+
+## 问题及挑战
+
+1.由于我们第一次接触SEIR模型，在模型的理解上会有一定难度
+2.全国各省市复工时间不完全相同，如何界定全国复工时间有待研究
+3.计算有效生成数有一个陷阱，就是不能用确诊的时间，而要用出现症状的时间。但是因为信息不充分公开，我们很难知道每一个确诊病例出现症状的时间。
+
+
+## 计划的解决办法
+
+1.通过查找相关文献，学习并加深对SEIR模型的理解
+2.小组成员协作，通过阅读文献寻找相关问题的解决方法，必要时向其他同学和老师请教
+
