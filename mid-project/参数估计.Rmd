@@ -2,7 +2,7 @@
 title: "Project-parameter estimation method"
 author: "Zhiwei Li"
 date: "2020/5/6"
-frontsize: 12
+fontsize: 12
 output: html_document
 ---
 
@@ -45,6 +45,7 @@ $$
 $$
 \hat{\beta_1}=\frac{n\Sigma Y_iX_i - \Sigma Y_i \Sigma X_i}{n\Sigma X_i^2-(\Sigma X_i)^2}
 $$
+
 ## 基于SEIR模型的疫情分析-极大似然函数法
 
 &emsp;&emsp;对于SEIR模型，我们根据新冠疫情的发展，做出以下假设：
@@ -113,5 +114,14 @@ $$
 &emsp;&emsp;(1)若f( Y(i+1) ) <= f( Y(i) )(即移动后得到更优解)，则总是接受该移动；
 
 &emsp;&emsp;(2)若f( Y(i+1) ) > f( Y(i) )(即移动后的解比当前解要差)，则以一定的概率接受移动，而且这个概率随着时间推移逐渐降低（逐渐降低才能趋向稳定）相当于上图中，从B移向BC之间的小波峰时，每次右移（即接受一个更糟糕值）的概率在逐渐降低。如果这个坡特别长，那么很有可能最终我们并不会翻过这个坡。如果它不太长，这很有可能会翻过它，这取决于衰减 t 值的设定。
+
+
+
+
+
+
+
+
+
 
 
